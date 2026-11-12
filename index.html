@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8"><title>AI & ML Code Tutor</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#0B1020;--bg2:#111827;--card:#172033;--p:#6366F1;--s:#06B6D4;--t:#F8FAFC;--t2:#94A3B8;--ok:#22C55E;--er:#EF4444;--ln:#ffffff14;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+:root[data-theme=light]{--bg:#F1F5F9;--bg2:#fff;--card:#fff;--t:#0F172A;--t2:#475569;--ln:#0000001a}
+@media (prefers-color-scheme:light){:root:not([data-theme=dark]){--bg:#F1F5F9;--bg2:#fff;--card:#fff;--t:#0F172A;--t2:#475569;--ln:#0000001a}}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--t);font:15px/1.6 'IBM Plex Sans',system-ui,sans-serif}
+header{display:flex;gap:12px;align-items:center;padding:12px 20px;background:var(--bg2);border-bottom:1px solid var(--ln);position:sticky;top:env(safe-area-inset-top,0px);z-index:5}
+h1{font-size:17px;margin:0;font-weight:600;flex:1}h2{font-size:22px;margin:0 0 4px}h3{font-size:16px;margin:18px 0 8px}
+button,select{font:inherit;color:var(--t);background:var(--card);border:1px solid var(--ln);border-radius:8px;padding:7px 13px;cursor:pointer}
+button:hover{border-color:var(--p)}button:focus-visible,select:focus-visible,input:focus-visible{outline:2px solid var(--s);outline-offset:2px}
+button.pri{background:var(--p);border-color:var(--p);color:#fff}
+main{display:grid;grid-template-columns:250px 1fr;gap:20px;max-width:1200px;margin:0 auto;padding:20px}
+nav{display:flex;flex-direction:column;gap:6px}
+nav button{text-align:left;display:flex;justify-content:space-between;gap:8px}nav button.on{border-color:var(--p);background:#6366F122}
+.dot{width:9px;height:9px;border-radius:50%;background:var(--t2);align-self:center;flex:none}.dot.Learning{background:var(--s)}.dot.Revise{background:#F59E0B}.dot.Done{background:var(--ok)}.dot.Mastered{background:var(--p)}
+.card{background:var(--card);border:1px solid var(--ln);border-radius:12px;padding:16px;margin-bottom:14px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px}
+.big{font-size:28px;font-weight:600}.mut{color:var(--t2);font-size:13px}
+.bar{height:8px;background:var(--ln);border-radius:4px;overflow:hidden;margin-top:8px}.bar i{display:block;height:100%;background:linear-gradient(90deg,var(--p),var(--s))}
+.tabs{display:flex;gap:6px;flex-wrap:wrap;margin:12px 0}.tabs button.on{background:var(--p);border-color:var(--p);color:#fff}
+.code{background:#0A0F1E;border:1px solid var(--ln);border-radius:10px;overflow-x:auto;padding:10px 0;font:13px/1.65 'IBM Plex Mono',monospace;color:#E2E8F0}
+.code div{display:flex;padding:0 14px;white-space:pre}.code div b{color:#64748B;width:32px;flex:none;font-weight:400;user-select:none}
+.code div.hl{background:#6366F133;box-shadow:inset 3px 0 var(--s)}
+.step{padding:10px 12px;border:1px solid var(--ln);border-radius:8px;margin-bottom:8px;cursor:pointer}.step.on{border-color:var(--s);background:#06B6D414}
+.step code{font-family:'IBM Plex Mono',monospace;color:var(--s);font-size:13px}
+pre.out{background:#0A0F1E;color:#E2E8F0;padding:12px;border-radius:10px;overflow-x:auto;font:13px/1.5 'IBM Plex Mono',monospace;margin:0}
+.fc{min-height:150px;display:flex;align-items:center;justify-content:center;text-align:center;font-size:18px;cursor:pointer;padding:24px;transition:transform .35s;border-color:var(--p)}
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.opt{display:block;width:100%;text-align:left;margin-bottom:8px}.opt.ok{border-color:var(--ok);background:#22C55E22}.opt.bad{border-color:var(--er);background:#EF444422}
+input.fill{font:13px 'IBM Plex Mono',monospace;background:#0A0F1E;color:#E2E8F0;border:1px solid var(--ln);border-radius:6px;padding:5px 8px;width:100%}
+input.fill.ok{border-color:var(--ok)}input.fill.bad{border-color:var(--er)}
+.tag{font-size:12px;padding:2px 9px;border-radius:99px;background:#06B6D422;color:var(--s)}
+.note{border-left:3px solid #F59E0B;padding:8px 12px;background:#F59E0B14;border-radius:0 8px 8px 0;margin:10px 0}
+html{-webkit-text-size-adjust:100%}body{overflow-x:hidden}nav button span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+@media(max-width:800px){body{font-size:16px}header{position:static;padding:10px 12px}h1{font-size:16px}h2{font-size:20px;line-height:1.3}h3{font-size:15px}
+main{grid-template-columns:1fr;padding:0 12px 24px;gap:12px}
+nav{flex-direction:row;overflow-x:auto;position:sticky;top:env(safe-area-inset-top,0px);z-index:4;background:var(--bg);margin:0 -12px;padding:10px 12px;border-bottom:1px solid var(--ln);scrollbar-width:none;-webkit-overflow-scrolling:touch}nav::-webkit-scrollbar{display:none}
+nav button{flex:none;max-width:170px;min-height:44px;padding:6px 12px;border-radius:99px}
+button,select{min-height:44px}header button{min-height:38px;padding:5px 10px;font-size:13px}
+.grid{grid-template-columns:1fr 1fr;gap:10px}.card{padding:14px}.big{font-size:24px}
+.tabs{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.code{font-size:12px;line-height:1.6;margin:0 -12px;border-radius:0;border-left:0;border-right:0}.code div{padding:0 10px}.code div b{width:26px}
+pre.out{font-size:12px;margin:0 -12px;border-radius:0}
+.step{padding:12px}.step code{font-size:12px;word-break:break-word}
+.fc{min-height:180px;font-size:17px;padding:18px}
+.row{gap:8px}.row>button{flex:1 1 calc(50% - 8px)}
+.row>.tag{flex:none}
+#sel{flex:1}
+.opt{padding:12px 14px;min-height:48px}
+input.fill{font-size:16px;padding:10px}
+.note{font-size:14px}}
+@media(max-width:360px){.grid{grid-template-columns:1fr}}
+@media(prefers-reduced-motion:reduce){*{transition:none!important}}
+</style></head><body>
+<header><h1>AI &amp; ML Code Tutor</h1><button id="th" aria-label="Toggle theme">Theme</button><button id="rs">Reset progress</button></header>
+<main><nav id="nav"></nav><section id="v"></section></main>
+<script>
+const P=[
+{id:1,t:"Git commands",topic:"Version control",lvl:"Easy",time:"15 min",lang:"shell",
+desc:"Create a repository, commit, branch, merge and push to GitHub. This is shell commands, not Python.",
+code:String.raw`mkdir git
+cd git
+git init
+git config --global user.name “username”
+git config --global user.email “email ID”
+touch new.py
+git add .
+git status –s
+touch new.html
+git add .
+git status –s
+git commit –am “Done”
+git branch
+git branch main
+git switch main
+touch file.py
+git add .
+git status –s
+git switch master
+git merge main
+ls
+git remote add origin “paste the link”
+git push –u origin master
+git pull
+ls`,
+fix:String.raw`mkdir git
+cd git
+git init
+git config --global user.name "username"
+git config --global user.email "email ID"
+touch new.py
+git add .
+git status -s
+touch new.html
+git add .
+git status -s
+git commit -am "Done"
+git branch
+git branch main
+git switch main
+touch file.py
+git add .
+git status -s
+git switch master
+git merge main
+ls
+git remote add origin "paste the link"
+git push -u origin master
+git pull
+ls`,
+fixNote:"Your original has curly quotes and en-dashes (–s, –am, –u) pasted from Word. A terminal rejects them, so the corrected version uses plain \" and -. Also, git switch master only works if your first branch is called master. If git init made main, use that name.",
+steps:[["3","git init","Creates a hidden .git folder so Git starts tracking this folder."],["4-5","git config --global ...","Stores your name and email. Every commit carries them."],["7","git add .","Stages all changed files for the next commit. The dot means everything here."],["8","git status -s","Short status: A = added, ?? = untracked."],["12","git commit -am","Saves a snapshot with the message Done. -a stages tracked files, -m adds the message."],["14-15","git branch main / git switch main","Makes a new branch called main and moves onto it."],["19-20","git switch master / git merge main","Go back to master and bring the work from main into it."],["22-23","git remote add / git push -u","Links your GitHub repo as origin, then uploads master and remembers it."],["24","git pull","Downloads and merges new changes from GitHub."]],
+out:"git status -s shows lines like:\nA  new.py\nA  new.html\n\ngit branch lists branches, with * on the current one.",
+cards:[["What does git init do?","Creates a new Git repository (the .git folder) in the current folder."],["Difference between git add and git commit?","add stages changes. commit saves the staged snapshot."],["What does -u do in git push -u origin master?","Sets origin/master as the default upstream, so later you can just type git push."]],
+quiz:[["Which command links your folder to a GitHub repository?",["git init","git remote add origin <link>","git pull","git merge"],1,"remote add origin stores the GitHub URL under the name origin."],["What does git status -s show?",["Full history","A short summary of changed files","Remote URL","Branch list"],1,"-s means short format."]]},
+{id:3,t:"NumPy aggregate functions",topic:"NumPy",lvl:"Easy",time:"15 min",lang:"python",
+desc:"Run sum, product, mean, standard deviation, variance, min, max, argmin, argmax and median on one array.",
+code:String.raw`import numpy as np
+
+# Define the array
+arr = np.array([1, 2, 3, 4, 5])
+print("Array:", arr)
+
+# Aggregation functions
+print("Sum:", np.sum(arr))
+print("Product:", np.prod(arr))
+print("Mean:", np.mean(arr))
+print("Standard Deviation:", np.std(arr))
+print("Variance:", np.var(arr))
+print("Minimum Value:", np.min(arr))
+print("Maximum Value:", np.max(arr))
+print("Index of Minimum Value:", np.argmin(arr))
+print("Index of Maximum Value:", np.argmax(arr))
+print("Median:", np.median(arr))`,
+steps:[["1","import numpy as np","Loads NumPy and gives it the short name np. Remove it and every np. line fails with NameError."],["4","np.array([1,2,3,4,5])","Turns a Python list into a NumPy array, which supports fast maths."],["8-9","np.sum / np.prod","Adds all items (1+2+3+4+5=15). Multiplies them (1x2x3x4x5=120)."],["10","np.mean","Sum divided by count: 15/5 = 3.0."],["11-12","np.std / np.var","Spread of values. Variance is 2.0, std is its square root, 1.414."],["13-14","np.min / np.max","Smallest (1) and largest (5) value."],["15-16","np.argmin / np.argmax","The index (position) of the smallest and largest, not the value: 0 and 4."],["17","np.median","Middle value of the sorted data: 3.0."]],
+out:"Array: [1 2 3 4 5]\nSum: 15\nProduct: 120\nMean: 3.0\nStandard Deviation: 1.4142135623730951\nVariance: 2.0\nMinimum Value: 1\nMaximum Value: 5\nIndex of Minimum Value: 0\nIndex of Maximum Value: 4\nMedian: 3.0",
+cards:[["What does import numpy as np mean?","Imports NumPy and gives it the alias np."],["np.argmax returns the value or the index?","The index of the largest value."],["np.var vs np.std?","std is the square root of var."]],
+quiz:[["np.prod(np.array([1,2,3,4,5])) gives?",["15","120","24","5"],1,"1x2x3x4x5 = 120. 15 is the sum."],["np.argmin([4,2,9]) gives?",["2","1","0","9"],1,"The smallest value 2 is at index 1."]]},
+{id:7,t:"Pandas groupby and agg",topic:"Pandas",lvl:"Easy",time:"15 min",lang:"python",
+desc:"Group rows by course name and find the minimum fee for each course.",
+code:String.raw`import pandas as pd
+
+t = {
+"Course": ["PY", "JV", "DBMS", "MMA", "MMA"],
+"Fee": [300, 600, 21, 350, 67],
+"Complexity": [100, 56, 32, 10, 67]
+}
+d = pd.DataFrame(t)
+c = d.groupby("Course").agg({"Fee": "min"})
+print("\n", c)`,
+steps:[["3-7","t = {...}","A dictionary. Each key becomes a column and each list its values."],["8","pd.DataFrame(t)","Builds a table with 5 rows and 3 columns."],["9","d.groupby(\"Course\")","Puts rows with the same Course together. MMA has two rows (350 and 67)."],["9","agg({\"Fee\":\"min\"})","For each group take the smallest Fee. MMA becomes 67."],["10","print(\"\\n\", c)","Prints a blank line, then the result. Courses are sorted A to Z."]],
+out:"\n         Fee\nCourse\nDBMS      21\nJV       600\nMMA       67\nPY       300",
+cards:[["What does groupby(\"Course\") do?","Groups rows that share the same Course value."],["What does agg({\"Fee\":\"min\"}) do?","Applies min to the Fee column in each group."]],
+quiz:[["Minimum Fee for MMA?",["350","67","417","21"],1,"MMA rows have 350 and 67. The min is 67."],["Why does the output list DBMS first?",["Lowest fee","groupby sorts group keys","Random","Alphabetical by Fee"],1,"groupby sorts the group labels by default."]]},
+{id:15,t:"Log transformation",topic:"Data preprocessing",lvl:"Medium",time:"25 min",lang:"python",
+desc:"Reduce the effect of large outliers in skewed data using log10, then compare boxplots.",
+code:String.raw`import pandas as pd
+import numpy as np
+import seaborn as sns
+import matplotlib.pyplot as plt
+
+data = [1,1,10,10,15,15,20,20,30,50,120,130,120,50,30,30,25,20,20,15,15,13,11,9,7,6,6,5,5,5,4,4,4,4,3,3,3,3,2,2,2,2,2,2,2,1,1,1]
+df = pd.DataFrame(data, columns=["Positive Skewed"])
+
+plt.figure(figsize=(12,5))
+df.boxplot(column='Positive Skewed')
+plt.title("Boxplot - Original Data")
+plt.show()
+
+df_log = np.log10(df)
+print("Log Transformed Data:\n", df_log)
+
+original_val = 10 ** df_log
+print('Recovered Original Values:\n', original_val)
+
+plt.figure(figsize=(12,5))
+df_log.boxplot(column='Positive Skewed')
+plt.title("Boxplot - Log Transformed")
+plt.show()`,
+steps:[["1-5","imports","pandas for tables, numpy for log10, matplotlib for plots. seaborn is imported but not used here."],["7-8","data / DataFrame","48 numbers, mostly small with a few big ones (120, 130). This long right tail is positive skew."],["10-13","boxplot","The original plot shows the big values as outlier dots far from the box."],["15","np.log10(df)","Takes log base 10 of every value: 1 becomes 0, 10 becomes 1, 100 becomes 2. Big values shrink most."],["18","10 ** df_log","Reverses the log. This proves no information was lost."],["21-24","second boxplot","Same data after log. The box is balanced and the outliers are gone or much closer."]],
+out:"Boxplot 1: box near the bottom, many dots above (outliers).\nLog Transformed Data: 48 rows, e.g. 1 -> 0.0, 10 -> 1.0, 120 -> 2.079181\nRecovered Original Values: the same 48 numbers as before.\nBoxplot 2: compact, balanced box.\n\nSkewness I measured: 2.92 before, 0.38 after.",
+cards:[["Why use a log transform?","To reduce positive skew and the pull of large outliers."],["How do you undo log10?","Compute 10 ** value."],["Can log10 take 0 or negative numbers?","No. Log is only defined for positive numbers."]],
+quiz:[["np.log10(1000) equals?",["2","3","10","1000"],1,"10 to the power 3 is 1000."],["What does the log transform do to skewed data?",["Makes it more skewed","Reduces skew","Deletes outliers","Sorts the data"],1,"It compresses large values more than small ones."]]},
+{id:17,t:"Train and test split",topic:"Machine Learning",lvl:"Medium",time:"20 min",lang:"python",
+desc:"Load the Real Estate CSV, split it into features (X) and target (y), then into training and testing sets.",
+code:String.raw`# Import necessary modules
+import pandas as pd
+from sklearn.linear_model import LinearRegression
+from sklearn.model_selection import train_test_split
+
+# Load the dataset
+df = pd.read_csv('Real-estate.csv')
+
+# Separate features (X) and target (y)
+X = df.iloc[:, :-1]  # All columns except the last
+y = df.iloc[:, -1]   # Last column as target
+
+# Split the dataset into training and testing sets
+X_train, X_test, y_train, y_test = train_test_split(
+    X, y, test_size=0.05, random_state=0
+)
+
+# Display the features and target
+print("📊 Feature Matrix (X):\n", X)
+print("\n🎯 Target Vector (y):\n", y)`,
+fixNote:"Not an error, but LinearRegression is imported and never used in this program. It is left in your original. Real-estate.csv is not in your document, so I cannot show real output.",
+steps:[["4","train_test_split","The function that shuffles and splits data."],["7","pd.read_csv","Reads the CSV file into a DataFrame."],["10","df.iloc[:, :-1]","iloc picks by position. : means all rows, :-1 means every column except the last. That is X (inputs)."],["11","df.iloc[:, -1]","Only the last column. That is y (the answer to predict)."],["14-16","train_test_split(...)","test_size=0.05 keeps 5% for testing and 95% for training. random_state=0 makes the shuffle repeatable."],["19-20","print","Shows X and y. It does not print the split parts."]],
+out:"Depends on Real-estate.csv (not provided).\nX prints all columns except the last. y prints the last column.",
+cards:[["What does test_size=0.05 mean?","5% of rows go to the test set, 95% to training."],["Why random_state?","So the same split is made every run."],["What does iloc[:, -1] select?","The last column of every row."]],
+quiz:[["With 400 rows and test_size=0.05, how many test rows?",["5","20","40","380"],1,"5% of 400 = 20."],["X contains?",["Only the last column","All columns except the last","All columns","Row numbers"],1,"iloc[:, :-1] drops the last column."]]},
+{id:18,t:"Linear regression",topic:"Regression",lvl:"Medium",time:"20 min",lang:"python",
+desc:"Fit a straight line to predict house price from size, then predict the price of a 2000 sq ft house.",
+code:String.raw`from sklearn.linear_model import LinearRegression
+import numpy as np
+
+# Example: Predict price from house size
+X = np.array([[1500], [1800], [2400]])  # Size in sq ft
+y = np.array([7000000, 8500000, 12000000])  # Prices
+
+model = LinearRegression()
+model.fit(X, y)
+
+print("Weight (w):", model.coef_[0])
+print("Intercept (b):", model.intercept_)
+
+# Predict price of a 2000 sq ft house
+predicted_price = model.predict([[2000]])
+print("Predicted Price: ₹", predicted_price[0])`,
+steps:[["5","X = np.array([[...]])","Inputs must be 2D (rows x features), so double brackets."],["6","y = np.array([...])","The prices to learn from. y is 1D."],["8","LinearRegression()","Creates an empty model for the line y = w*x + b."],["9","model.fit(X, y)","Learns the best w and b by minimising squared error."],["11","model.coef_[0]","w, the slope: about 5595 rupees more per extra sq ft."],["12","model.intercept_","b, where the line crosses y when x is 0."],["15","model.predict([[2000]])","Computes w x 2000 + b. Returns an array, so [0] picks the number."]],
+out:"Weight (w): 5595.238095238094\nIntercept (b): -1464285.7142857127\nPredicted Price: ₹ 9726190.476190474\n\n(Run by me to verify. Your document had no output for this one.)",
+cards:[["What does model.fit(X, y) do?","Trains the model by finding the best slope and intercept."],["Why double brackets [[2000]]?","predict expects a 2D array: rows by features."],["What is coef_?","The weight or slope for each feature."]],
+quiz:[["Which line trains the model?",["LinearRegression()","model.fit(X, y)","model.predict()","np.array()"],1,"fit learns from data. LinearRegression() only creates the model."],["The line equation is?",["y = w*x + b","y = x^2","y = log x","y = w/x"],0,"w is the weight (slope), b the intercept."]]},
+{id:19,t:"MSE, RMSE and R²",topic:"Model evaluation",lvl:"Medium",time:"25 min",lang:"python",
+desc:"Measure how wrong predictions are, using scikit-learn and then the manual formulas.",
+code:String.raw`import numpy as np
+from sklearn.metrics import mean_squared_error, r2_score
+
+y_actual = np.array([3, 5, 2, 7])
+y_pred = np.array([2.5, 4.5, 3, 6.5])
+
+mse = mean_squared_error(y_actual, y_pred)
+rmse = np.sqrt(mse)
+r2 = r2_score(y_actual, y_pred)
+
+print("Using sklearn.metrics:")
+print("MSE:", mse)
+print("RMSE:", rmse)
+print("R²:", r2)
+
+mse_manual = np.mean((y_actual - y_pred) ** 2)
+rmse_manual = np.sqrt(mse_manual)
+rss = np.sum((y_actual - y_pred) ** 2)
+tss = np.sum((y_actual - np.mean(y_actual)) ** 2)
+r2_manual = 1 - (rss / tss)
+
+print("\nManual calculation:")
+print("MSE:", mse_manual)
+print("RMSE:", rmse_manual)
+print("R²:", r2_manual)`,
+steps:[["4-5","y_actual / y_pred","True values and model guesses. Errors are -0.5, -0.5, +1, -0.5."],["7","mean_squared_error","Average of squared errors: (0.25+0.25+1+0.25)/4 = 0.4375."],["8","np.sqrt(mse)","RMSE puts the error back in the original units: 0.6614."],["9","r2_score","How much of the variation the model explains. 1 is perfect."],["16","np.mean((a-p)**2)","The MSE formula written by hand. It matches sklearn."],["18","rss","Residual sum of squares: total squared error = 1.75."],["19","tss","Total sum of squares: how far actual values are from their own mean."],["20","1 - rss/tss","R² formula: 1 - 1.75/14.75 = 0.8814."]],
+out:"Using sklearn.metrics:\nMSE: 0.4375\nRMSE: 0.6614378277661477\nR²: 0.8813559322033898\n\nManual calculation:\nMSE: 0.4375\nRMSE: 0.6614378277661477\nR²: 0.8813559322033898\n\n(Run by me to verify.)",
+cards:[["MSE formula?","Mean of (actual - predicted) squared."],["RMSE formula?","Square root of MSE."],["R² formula?","1 - RSS/TSS."],["What does R² = 1 mean?","A perfect fit."]],
+quiz:[["RMSE is?",["MSE squared","Square root of MSE","MSE / 2","Sum of errors"],1,"The root brings the unit back to the original."],["Why square the errors?",["To make them bigger only","So negatives do not cancel positives","To sort them","For speed"],1,"Without squaring, +1 and -1 would cancel."]]},
+{id:6,t:"Pandas DataFrame aggregation",topic:"Pandas",lvl:"Easy",time:"20 min",lang:"python",
+desc:"Build a marks table and apply eight aggregation functions to every column at once.",
+code:String.raw`# Import module
+import pandas as pd
+
+# Creating the dataset
+df = pd.DataFrame([
+[9, 4, 8, 9],
+[8, 10, 7, 6],
+[7, 6, 8, 5]
+], columns=['Maths', 'English', 'Science', 'History'])
+
+# Display dataset
+print("Dataset:\n", df)
+
+# Apply aggregation functions
+result = df.agg(['sum', 'min', 'max', 'mean', 'median', 'std', 'count', 'size'])
+
+# Display result
+print("\nAggregated Results:\n", result)`,
+fixNote:"Your document's output shows History std as 2.0 and rounds means. I ran it: History std is 2.081666, English std 3.055050, Science std 0.577350. The program is correct. Only the written output was off.",
+steps:[["2","import pandas as pd","Loads pandas with the alias pd."],["5-9","pd.DataFrame([...], columns=[...])","Each inner list is a row (a student). columns names the 4 subjects."],["12","print(\"Dataset:\\n\", df)","Shows the table. \\n starts a new line."],["15","df.agg([...])","Runs every function on every column and stacks the results as rows."],["15","'sum','min','max'","Maths: 24, 7, 9."],["15","'mean','median','std'","Average, middle value, spread. Maths mean 8.0, std 1.0."],["15","'count','size'","Both give 3 here. count skips missing values, size does not."]],
+out:"        Maths    English    Science    History\nsum      24.0  20.000000  23.000000  20.000000\nmin       7.0   4.000000   7.000000   5.000000\nmax       9.0  10.000000   8.000000   9.000000\nmean      8.0   6.666667   7.666667   6.666667\nmedian    8.0   6.000000   8.000000   6.000000\nstd       1.0   3.055050   0.577350   2.081666\ncount     3.0   3.000000   3.000000   3.000000\nsize      3.0   3.000000   3.000000   3.000000",
+cards:[["What does df.agg([...]) do?","Applies several functions to every column."],["count vs size?","count skips NaN. size counts all rows."],["What does columns=[...] do?","Names each column."]],
+quiz:[["Mean of Maths (9, 8, 7)?",["7","8","9","24"],1,"24 / 3 = 8.0."],["Each inner list in the DataFrame is a?",["Column","Row","Index","Function"],1,"Each inner list becomes one row."]]}
+];
+const K='aiml_v1',$=s=>document.querySelector(s),esc=s=>s.replace(/&/g,'&amp;').replace(/</g,'&lt;');
+let S;try{S=JSON.parse(localStorage.getItem(K))}catch(e){}S=S||{st:{},cd:{},qz:{},days:[],last:null};
+const save=()=>{try{localStorage.setItem(K,JSON.stringify(S))}catch(e){}};
+const touch=id=>{S.last=id;const d=new Date().toISOString().slice(0,10);if(!S.days.includes(d))S.days.push(d);if(!S.st[id])S.st[id]='Learning';save()};
+const streak=()=>{let n=0,d=new Date();while(S.days.includes(d.toISOString().slice(0,10))){n++;d.setDate(d.getDate()-1)}return n};
+let cur=0,tab='learn',st={step:-1,fix:false,ci:0,flip:false,qi:0,ans:null,score:0,done:false,pr:null};
+const stat=id=>S.st[id]||'Not started';
+function nav(){$('#nav').innerHTML='<button class="'+(cur===0?'on':'')+'" data-p="0">Dashboard</button>'+P.map(p=>`<button class="${cur===p.id?'on':''}" data-p="${p.id}"><span>Q${p.id} ${p.t}</span><i class="dot ${stat(p.id).split(' ')[0]}"></i></button>`).join('')}
+function dash(){const n=P.length,c=s=>P.filter(p=>stat(p.id)===s).length,done=c('Completed')+c('Mastered'),lr=c('Learning')+c('Needs revision'),ns=c('Not started');
+const qs=Object.values(S.qz),avg=qs.length?Math.round(qs.reduce((a,b)=>a+b,0)/qs.length):null;
+const weak=P.filter(p=>S.qz[p.id]!==undefined&&S.qz[p.id]<70),due=P.reduce((a,p)=>a+(S.cd[p.id]?.bad?.length||0),0),last=P.find(p=>p.id===S.last);
+return `<h2>Dashboard</h2><p class="mut">Your 8 selected programs. Progress is saved in this browser.</p>
+<div class="grid"><div class="card"><div class="big">${n}</div><div class="mut">Programs added</div></div><div class="card"><div class="big">${done}</div><div class="mut">Completed</div></div><div class="card"><div class="big">${lr}</div><div class="mut">Learning</div></div><div class="card"><div class="big">${ns}</div><div class="mut">Not started</div></div><div class="card"><div class="big">${streak()}</div><div class="mut">Day streak</div></div><div class="card"><div class="big">${avg===null?'–':avg+'%'}</div><div class="mut">Quiz average</div></div></div>
+<div class="card"><b>Overall progress</b> <span class="mut">${Math.round(done/n*100)}%</span><div class="bar"><i style="width:${done/n*100}%"></i></div></div>
+<div class="card"><b>Continue learning</b><p>${last?`<button class="pri" data-p="${last.id}">Q${last.id} ${last.t}</button>`:'Pick any program on the left to begin.'}</p></div>
+<div class="card"><b>Daily revision</b><p class="mut">${due?due+' flashcard(s) marked “Don’t know”. Open a program and use Flashcards, then Revise missed.':'No missed flashcards yet.'}</p></div>
+<div class="card"><b>Weak topics</b><p class="mut">${weak.length?weak.map(p=>p.topic+' (Q'+p.id+', '+S.qz[p.id]+'%)').join(', '):'Nothing below 70% yet. Take a quiz to find out.'}</p></div>`}
+function lines(code,hl){return '<div class="code">'+code.split('\n').map((l,i)=>`<div data-l="${i+1}" class="${hl.includes(i+1)?'hl':''}"><b>${i+1}</b>${esc(l)||' '}</div>`).join('')+'</div>'}
+function rng(r){const a=r.split('-').map(Number);const o=[];for(let i=a[0];i<=(a[1]||a[0]);i++)o.push(i);return o}
+function learn(p){const code=st.fix?p.fix:p.code,hl=st.step>=0?rng(p.steps[st.step][0]):[];
+return `<p>${p.desc}</p><div class="row"><span class="tag">${p.topic}</span><span class="tag">${p.lvl}</span><span class="tag">${p.time}</span></div>
+${p.fixNote?`<div class="note">${p.fixNote}</div>`:''}
+<h3>${st.fix?'Corrected code':'Original code'}</h3>
+<div class="row" style="margin-bottom:8px">${p.fix?`<button id="fx">${st.fix?'Show original':'Show corrected'}</button>`:''}<button id="cp">Copy</button><button id="dl">Download</button></div>${lines(code,hl)}
+<h3>Step by step <span class="mut">(tap a step to highlight its lines)</span></h3>${p.steps.map((s,i)=>`<div class="step ${i===st.step?'on':''}" data-s="${i}"><code>${esc(s[1])}</code> <span class="mut">line${s[0].includes('-')?'s':''} ${s[0]}</span><div>${esc(s[2])}</div></div>`).join('')}
+<h3>Expected output</h3><pre class="out">${esc(p.out)}</pre>`}
+function cards(p){const d=S.cd[p.id]||(S.cd[p.id]={ok:[],bad:[]}),c=p.cards[st.ci];
+return `<p class="mut">Card ${st.ci+1} of ${p.cards.length}. Known: ${d.ok.length}. Need revision: ${d.bad.length}.</p>
+<div class="card fc" id="fc">${esc(st.flip?c[1]:c[0])}</div><p class="mut" style="text-align:center">Tap the card to flip</p>
+<div class="row"><button id="pv">Previous</button><button id="nx">Next</button><button id="sh">Shuffle</button><button id="kn" class="pri">Know</button><button id="dk">Don't know</button>${d.bad.length?'<button id="rv">Revise missed</button>':''}</div>`}
+function quiz(p){const q=p.quiz[st.qi];
+if(st.done)return `<div class="card"><div class="big">${st.score}/${p.quiz.length}</div><p>Accuracy ${Math.round(st.score/p.quiz.length*100)}%. ${st.score<p.quiz.length?'Review '+p.topic+' and try again.':'All correct.'}</p><button id="rt" class="pri">Retry</button></div>`;
+return `<p class="mut">Question ${st.qi+1} of ${p.quiz.length}</p><h3>${esc(q[0])}</h3>${q[1].map((o,i)=>`<button class="opt ${st.ans!==null?(i===q[2]?'ok':i===st.ans?'bad':''):''}" data-o="${i}">${esc(o)}</button>`).join('')}
+${st.ans!==null?`<div class="note">${st.ans===q[2]?'Correct. ':'Not quite. '}${esc(q[3])}</div><button id="qn" class="pri">${st.qi+1<p.quiz.length?'Next question':'See score'}</button>`:''}`}
+function practice(p){const src=(p.fix||p.code).split('\n');if(!st.pr||st.pr.id!==p.id){const c=src.map((l,i)=>[l,i]).filter(x=>x[0].trim()&&!x[0].trim().startsWith('#')&&x[0].length>8);const pick=[];while(pick.length<Math.min(4,c.length)){const x=c[Math.floor(Math.random()*c.length)];if(!pick.includes(x))pick.push(x)}st.pr={id:p.id,idx:pick.map(x=>x[1]).sort((a,b)=>a-b),hint:{}}}
+return `<p>Type the missing lines from memory. Use hints before giving up: hint 1 shows the first word, hint 2 shows half the line.</p><div class="code" style="padding:12px">${src.map((l,i)=>st.pr.idx.includes(i)?`<div style="display:block;margin:4px 0"><input class="fill" data-i="${i}" placeholder="line ${i+1}" aria-label="Missing line ${i+1}"><span class="mut" id="h${i}"></span> <button data-h="${i}">Hint</button></div>`:`<div><b>${i+1}</b>${esc(l)||' '}</div>`).join('')}</div>
+<div class="row" style="margin-top:10px"><button id="ck" class="pri">Check</button><button id="nw">New blanks</button></div><p id="pm" class="mut"></p>`}
+function view(){nav();const el=$('#v');if(cur===0){el.innerHTML=dash();return}
+const p=P.find(x=>x.id===cur);
+el.innerHTML=`<h2>Q${p.id}. ${p.t}</h2><div class="row"><span class="mut">Status</span><select id="sel">${['Not started','Learning','Needs revision','Completed','Mastered'].map(s=>`<option ${stat(p.id)===s?'selected':''}>${s}</option>`).join('')}</select></div>
+<div class="tabs">${[['learn','Learn'],['cards','Flashcards'],['quiz','Quiz'],['prac','Write it yourself']].map(t=>`<button class="${tab===t[0]?'on':''}" data-t="${t[0]}">${t[1]}</button>`).join('')}</div>
+<div id="tc">${tab==='learn'?learn(p):tab==='cards'?cards(p):tab==='quiz'?quiz(p):practice(p)}</div>`}
+const go=(p,t)=>{cur=p;tab=t||'learn';st={step:-1,fix:false,ci:0,flip:false,qi:0,ans:null,score:0,done:false,pr:null};if(p)touch(p);view();scrollTo(0,0)};
+document.addEventListener('click',e=>{const b=e.target.closest('button,.step,.fc');if(!b)return;const p=P.find(x=>x.id===cur),d=b.dataset;
+if(d.p!==undefined)return go(+d.p);if(d.t){tab=d.t;st.pr=null;return view()}
+if(b.classList.contains('step')){st.step=+d.s;return view()}
+const id=b.id;if(!id&&d.o===undefined&&d.h===undefined)return;
+if(id==='th'){const r=document.documentElement;r.dataset.theme=(r.dataset.theme||(matchMedia('(prefers-color-scheme:light)').matches?'light':'dark'))==='dark'?'light':'dark';return}
+if(id==='rs'){if(confirm('Erase all saved progress?')){S={st:{},cd:{},qz:{},days:[],last:null};save();go(0)}return}
+if(id==='fx'){st.fix=!st.fix;return view()}
+if(id==='cp'){navigator.clipboard?.writeText(st.fix?p.fix:p.code);b.textContent='Copied';return}
+if(id==='dl'){const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([st.fix?p.fix:p.code]));a.download='q'+p.id+(p.lang==='python'?'.py':'.sh');a.click();return}
+if(tab==='cards'){const cd=S.cd[p.id],n=p.cards.length;
+if(id==='fc'){st.flip=!st.flip}else if(id==='nx'){st.ci=(st.ci+1)%n;st.flip=false}else if(id==='pv'){st.ci=(st.ci+n-1)%n;st.flip=false}
+else if(id==='sh'){p.cards.sort(()=>Math.random()-.5);st.ci=0;st.flip=false}
+else if(id==='kn'||id==='dk'){const k=id==='kn'?'ok':'bad',o=k==='ok'?'bad':'ok';cd[o]=cd[o].filter(x=>x!==st.ci);if(!cd[k].includes(st.ci))cd[k].push(st.ci);save();st.ci=(st.ci+1)%n;st.flip=false}
+else if(id==='rv'){st.ci=cd.bad[0];st.flip=false}return view()}
+if(tab==='quiz'){if(d.o!==undefined&&st.ans===null){st.ans=+d.o;if(st.ans===p.quiz[st.qi][2])st.score++}
+else if(id==='qn'){st.ans=null;if(st.qi+1<p.quiz.length)st.qi++;else{st.done=true;S.qz[p.id]=Math.round(st.score/p.quiz.length*100);save()}}
+else if(id==='rt'){st.qi=0;st.ans=null;st.score=0;st.done=false}return view()}
+if(tab==='prac'){const src=(p.fix||p.code).split('\n');
+if(d.h!==undefined){const i=+d.h,l=src[i].trim();st.pr.hint[i]=(st.pr.hint[i]||0)+1;$('#h'+i).textContent=st.pr.hint[i]===1?' starts with: '+l.split(/[\s(]/)[0]:' '+l.slice(0,Math.ceil(l.length/2))+'…'}
+else if(id==='ck'){let ok=0;document.querySelectorAll('input.fill').forEach(inp=>{const g=inp.value.trim().replace(/\s+/g,' ')===src[+inp.dataset.i].trim().replace(/\s+/g,' ');inp.className='fill '+(g?'ok':'bad');ok+=g});$('#pm').textContent=ok+' of '+st.pr.idx.length+' correct. Red lines need another look; spacing is ignored.'}
+else if(id==='nw'){st.pr=null;view()}}});
+document.addEventListener('change',e=>{if(e.target.id==='sel'){S.st[cur]=e.target.value;save();nav()}});
+view();
+</script></body></html>
